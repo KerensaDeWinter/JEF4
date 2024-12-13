@@ -24,5 +24,15 @@ export class MainMenu extends Scene
             this.scene.start('Game');
 
         });
+        let cursors = this.input.keyboard.addKeys('LEFT,RIGHT');
+        console.log(cursors);
+        
+    }
+    update() {
+        if(this.cursors.right.isDown) {
+
+            console.log("hier");
+
+        };
     }
 }

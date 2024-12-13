@@ -1,15 +1,24 @@
 import { Boot } from './scenes/Boot';
 import { Game } from './scenes/Game';
 import { GameOver } from './scenes/GameOver';
+import { GameOverParrot } from './scenes/GameOver-parrot';
+import { GameOverSnake } from './scenes/GameOver-snake';
+import { GameOverTiger } from './scenes/GameOver-tiger';
+import { GameOverToucan } from './scenes/GameOver-toucan';
 import { MainMenu } from './scenes/MainMenu';
-import { Preloader } from './scenes/Preloader';
+import { Instructions } from './scenes/Instructions';
+import { Pause } from './scenes/Pause';
+import { Counter } from './scenes/Couter';
+import { GameSingleDrum } from './scenes/GameSingleDrum';
+import { GameSingleRope } from './scenes/GameSingleRope';
+
 
 //  Find out more information about the Game Config at:
 //  https://newdocs.phaser.io/docs/3.70.0/Phaser.Types.Core.GameConfig
 const config = {
     type: Phaser.AUTO,
-    width: 1080,
-    height: 810,
+    width: window.innerHeight*1.3333,
+    height: window.innerHeight,
     parent: 'game-container',
     backgroundColor: '#028af8',
     scale: {
@@ -19,17 +28,29 @@ const config = {
     physics: {
         default: 'arcade',
         arcade: {
-            gravity: { y: 300 },
-            debug: false
+            gravity: { y: 0 },
+            debug: true
         }
     },
     scene: [
         Boot,
-        Preloader,
         MainMenu,
+        Instructions,
         Game,
-        GameOver
-    ]
+        GameSingleDrum,
+        GameSingleRope,
+        GameOver,
+        GameOverToucan,
+        GameOverParrot,
+        GameOverSnake,
+        GameOverTiger,
+        Pause,
+        Counter
+    ],
+    fps: {
+        target: 9600,
+        forceSetTimeOut: true,
+    }
 };
 
 export default new Phaser.Game(config);

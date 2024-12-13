@@ -17,7 +17,7 @@ const phasermsg = () => {
 }   
 
 export default defineConfig({
-    base: './',
+    base: '/banago/',
     logLevel: 'warning',
     build: {
         rollupOptions: {
