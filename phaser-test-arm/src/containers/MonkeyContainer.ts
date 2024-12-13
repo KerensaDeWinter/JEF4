@@ -57,11 +57,11 @@ export default class MonkeyContainer extends Phaser.GameObjects.Container
 
 		scene.load.spritesheet('monkey', '/monkey-sprite.png', { frameWidth: 880, frameHeight: 1264 })
 
-		this.display = scene.physics.add.sprite(-300, -77, 'monkey');
+		this.display = scene.physics.add.sprite(-300, -77, 'monkey'); // hier positie aap aanpassen
 
 		this.add(this.display);
 		this.display.setOrigin(0.5,0);
-        this.display.setScale(0.7);
+        this.display.setScale(0.7); // hier scale aanpassen
 
 		const width = this.display.width
 		const height = this.display.height

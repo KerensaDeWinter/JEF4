@@ -31,7 +31,7 @@ export class MainMenu extends Scene
 
         this.input.keyboard.on('keydown-Q', () => {
 
-            this.scene.start('GameSingleRope');
+            this.scene.start('Game');
 
         });
         this.createAnims();
