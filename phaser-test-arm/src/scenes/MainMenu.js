@@ -31,7 +31,7 @@ export class MainMenu extends Scene
 
         this.input.keyboard.on('keydown-Q', () => {
 
-            this.scene.start('Game');
+            this.scene.start('Game'); // wissel hier van scherm
 
         });
         this.createAnims();

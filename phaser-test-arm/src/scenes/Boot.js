@@ -13,10 +13,10 @@ export class Boot extends Scene
         this.load.spritesheet('monkey', 'monkey-sprite.png', { frameWidth: 880, frameHeight: 1264 }); // 880 width
         this.load.image('background', 'Background.png');
 
-        this.load.spritesheet('snake', 'snake.png', { frameWidth: 576, frameHeight: 378 }); // done
-        this.load.spritesheet('toucan', 'toucan.png', { frameWidth: 536, frameHeight: 493 }); // done
-        this.load.spritesheet('tiger', 'tiger.png', { frameWidth: 431, frameHeight: 314 }); // done
-        this.load.spritesheet('parrot', 'parrot.png', { frameWidth: 587, frameHeight: 560 }); // done
+        this.load.spritesheet('snake', 'snake.png', { frameWidth: 576, frameHeight: 378 }); 
+        this.load.spritesheet('toucan', 'toucan.png', { frameWidth: 536, frameHeight: 493 });
+        this.load.spritesheet('tiger', 'tiger.png', { frameWidth: 431, frameHeight: 314 });
+        this.load.spritesheet('parrot', 'parrot.png', { frameWidth: 587, frameHeight: 560 });
 
         this.load.image('ground', 'platform.png');
         this.load.image('banana', 'Banana.png');
