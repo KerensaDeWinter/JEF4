@@ -1,0 +1,56 @@
+import { Scene } from 'phaser';
+import { GlobalStyles } from '../styles/GlobalStyles';
+
+export class Counter extends Scene
+{
+    constructor ()
+    {
+        super('Counter');
+        //Britt, use remainingTime instead of time, this vloekt with phaser apparently
+        this.remainingTime = 6;
+        this.timeText = undefined;
+        this.running = undefined;
+
+    }
+
+    create ()
+    {
+        
+        this.running = true;
+        this.style = new GlobalStyles(); // moet er altijd in
+        this.background = this.add.image(this.sys.game.config.width / 2, this.sys.game.config.height / 2, 'counter-background');
+        this.background.setScale(0.72);
+
+      
+
+        this.add.image(this.sys.game.config.width/2, this.sys.game.config.height/1.6, 'drumO');
+        this.add.video(this.sys.game.config.width/2, this.sys.game.config.height/1.6, 'start');
+        this.timeText = this.add.text(this.sys.game.config.width / 2, this.sys.game.config.height / 2, 'Klaar?', {
+            fontFamily: 'Jungle Hype', fontSize: 180, color: this.style.colors.orange, stroke: this.style.colors.black, strokeThickness: 4,
+            align: 'center',
+        }).setOrigin(0.5, 0.5);
+
+        this.time.addEvent({
+            delay: 1000, // one second!
+            callback: this.updateTimer,
+            callbackScope: this, // this looks at the scene :)
+            repeat: 4, // repeat this 4 times than you have 5
+        });
+
+        //Britt, your old code
+        // setInterval(() => {
+        //     if (this.running) {
+        //         this.updateTimer();
+        //     }
+        // }, 1000);
+        setTimeout(()=> {
+            this.running = false;
+            this.scene.start('GameSingleDrum');
+        }, 6000);
+    }
+  
+    updateTimer() {
+        this.remainingTime--;
+        this.timeText.setText(this.remainingTime);
+    }
+}
