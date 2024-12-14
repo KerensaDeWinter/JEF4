@@ -17,6 +17,7 @@ export class MainMenu extends Scene
         this.registry.set('score', 0);
         this.registry.set('time', 180);
         this.registry.set('gameMode', undefined);
+        this.registry.set('gameOver', undefined);
 
         this.style = new GlobalStyles(); // moet er altijd in
         this.background = this.add.image(this.sys.game.config.width/2, this.sys.game.config.height/2, 'start-screen');
@@ -31,11 +32,19 @@ export class MainMenu extends Scene
         this.add.video(this.sys.game.config.width/2, this.sys.game.config.height/1.6, 'start');
 
         this.input.keyboard.on('keydown-Q', () => {
-
-            this.scene.start('Counter'); // wissel hier van scherm
+			this.registry.set('gameMode', "multi");
+            this.scene.start('Story'); 
+        });
+		this.input.keyboard.on('keydown-B', () => {
+			this.registry.set('gameMode', "singleRope");
+            this.scene.start('GameSingleRope'); 
+        });
+		this.input.keyboard.on('keydown-D', () => {
+			this.registry.set('gameMode', "singleDrum");
+            this.scene.start('GameSingleDrum'); 
 
         });
-        this.createAnims();
+		this.createAnims();
     }
     createAnims() {
         this.anims.create({

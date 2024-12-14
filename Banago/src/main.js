@@ -1,16 +1,13 @@
 import { Boot } from './scenes/Boot';
 import { Game } from './scenes/Game';
 import { GameOver } from './scenes/GameOver';
-import { GameOverParrot } from './scenes/GameOver-parrot';
-import { GameOverSnake } from './scenes/GameOver-snake';
-import { GameOverTiger } from './scenes/GameOver-tiger';
-import { GameOverToucan } from './scenes/GameOver-toucan';
 import { MainMenu } from './scenes/MainMenu';
 import { Instructions } from './scenes/Instructions';
 import { Pause } from './scenes/Pause';
-import { Counter } from './scenes/Couter';
+import { Counter } from './scenes/Counter';
 import { GameSingleDrum } from './scenes/GameSingleDrum';
 import { GameSingleRope } from './scenes/GameSingleRope';
+import { Story } from './scenes/Story';
 
 
 //  Find out more information about the Game Config at:
@@ -40,12 +37,9 @@ const config = {
         GameSingleDrum,
         GameSingleRope,
         GameOver,
-        GameOverToucan,
-        GameOverParrot,
-        GameOverSnake,
-        GameOverTiger,
         Pause,
-        Counter
+        Counter,
+        Story
     ],
     fps: {
         target: 9600,

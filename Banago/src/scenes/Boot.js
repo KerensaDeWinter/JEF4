@@ -20,8 +20,8 @@ export class Boot extends Scene
         this.load.image('instruction-background', 'instruction-background.png');
         this.load.image('counter-background', 'countdown.png');
 
-        this.load.spritesheet('snake', 'snake.png', { frameWidth: 432, frameHeight: 268 }); 
-        this.load.spritesheet('toucan', 'toucan.png', { frameWidth: 471, frameHeight: 442 });
+        this.load.spritesheet('snake', 'snake.png', { frameWidth: 431, frameHeight: 268 }); 
+        this.load.spritesheet('toucan', 'toucan.png', { frameWidth: 470, frameHeight: 439 });
         this.load.spritesheet('tiger', 'tiger.png', { frameWidth: 378, frameHeight: 273 });
         this.load.spritesheet('parrot', 'parrot.png', { frameWidth: 432, frameHeight: 412 });
 
@@ -36,6 +36,8 @@ export class Boot extends Scene
         this.load.video('instructionswing', 'instructionswing.webm', true, true);
         this.load.video('instructiontoucan', 'instructiontoucan.mp4', true, true);
         this.load.video('instructiontiger', 'instructiontiger.mp4', true, true);
+
+        this.load.video('story', 'storytelling.mp4', true);
 
     }
 

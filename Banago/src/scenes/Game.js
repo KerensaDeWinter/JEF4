@@ -265,94 +265,47 @@ export class Game extends Scene
         }
         this.cursors = this.input.keyboard.createCursorKeys();
         console.log(this.monkey.angle)
-        // this.cursors = this.input.activePointer.worldX / 800 * 100;
-        // console.log(this.input.activePointer.worldX);
+        
         if(this.cursors.left.isDown) {
-
-            this.angularForce--;
-            // if (this.monkey.angle > 49) {
-            //     this.monkey.angle = 50;
-            // } else {
-            //     for(let i = 0; i<10; i++) {
-            //         this.monkey.angle+=1;
-            //     }
-            // }
-            // // console.log(this.monkey.angle);
-            // if (Math.abs(this.monkey.angle) >= 20) {
-            //     this.monkey.display.anims.play('left3', true);
-            // }
-            // else if (Math.abs(this.monkey.angle) >= 10) {
-            //     this.monkey.display.anims.play('left2', true);
-            // }
-            // else if (Math.abs(this.monkey.angle) >= 0) {
-            //     this.monkey.display.anims.play('left1', true);
-            // }
+            this.angularForce += 1;
+            if (Math.abs(this.monkey.angle) >= 40) {
+                this.monkey.display.anims.play('left5', true);
+            }
+            else if (Math.abs(this.monkey.angle) >= 30) {
+                this.monkey.display.anims.play('left4', true);
+            }
+            else if (Math.abs(this.monkey.angle) >= 20) {
+                this.monkey.display.anims.play('left3', true);
+            }
+            else if (Math.abs(this.monkey.angle) >= 10) {
+                this.monkey.display.anims.play('left2', true);
+            }
+            else if (Math.abs(this.monkey.angle) >= 0) {
+                this.monkey.display.anims.play('left1', true);
+            }
         } else if (this.cursors.right.isDown) {
-            this.angularForce++;
-            // if (this.monkey.angle < -49) {
-            //     this.monkey.angle = -50;
-            // } else {
-            //     for(let j = 0; j<10; j++) {
-            //         this.monkey.angle-=1;
-            //     }
-            // }
-            // if (Math.abs(this.monkey.angle) >= 20) {
-            //     this.monkey.display.anims.play('right2', true);
-            // }
-            // else if (Math.abs(this.monkey.angle) >= 10) {
-            //     this.monkey.display.anims.play('right1', true);
-            // }
-            // else if (Math.abs(this.monkey.angle) >= 0) {
-            //     this.monkey.display.anims.play('turn', true);
-            // }
+            this.angularForce += -1;
+            if (Math.abs(this.monkey.angle) >= 40) {
+                this.monkey.display.anims.play('right4', true);
+            }
+            else if (Math.abs(this.monkey.angle) >= 30) {
+                this.monkey.display.anims.play('right3', true);
+            }
+            else if (Math.abs(this.monkey.angle) >= 20) {
+                this.monkey.display.anims.play('right2', true);
+            }
+            else if (Math.abs(this.monkey.angle) >= 10) {
+                this.monkey.display.anims.play('right1', true);
+            }
+            else if (Math.abs(this.monkey.angle) >= 0) {
+                this.monkey.display.anims.play('turn', true);
+            }
         }
-
-        console.log(this.angularForce);
-
-    //     if (this.cursors < 45) {
-    //         this.monkey.angle = 50-this.cursors;
-    //         if (Math.abs(this.monkey.angle) >= 40) {
-    //             this.monkey.display.anims.play('left5', true);
-    //         }
-    //         else if (Math.abs(this.monkey.angle) >= 30) {
-    //             this.monkey.display.anims.play('left4', true);
-    //         }
-    //         else if (Math.abs(this.monkey.angle) >= 20) {
-    //             this.monkey.display.anims.play('left3', true);
-    //         }
-    //         else if (Math.abs(this.monkey.angle) >= 10) {
-    //             this.monkey.display.anims.play('left2', true);
-    //         }
-    //         else if (Math.abs(this.monkey.angle) >= 0) {
-    //             this.monkey.display.anims.play('left1', true);
-    //         }
-    //     }
-    //     else if (this.cursors >= 99.5) {
-    //         this.monkey.angle = -50;
-    //     }
-    //     else if (this.cursors > 55){
-    //         this.monkey.angle = 50-this.cursors;
-    //         if (Math.abs(this.monkey.angle) >= 40) {
-    //             console.log("hier");
-    //             this.monkey.display.anims.play('right4', true);
-    //         }
-    //         else if (Math.abs(this.monkey.angle) >= 30) {
-    //             this.monkey.display.anims.play('right3', true);
-    //         }
-    //         else if (Math.abs(this.monkey.angle) >= 20) {
-    //             this.monkey.display.anims.play('right2', true);
-    //         }
-    //         else if (Math.abs(this.monkey.angle) >= 10) {
-    //             this.monkey.display.anims.play('right1', true);
-    //         }
-    //         else if (Math.abs(this.monkey.angle) >= 0) {
-    //             this.monkey.display.anims.play('turn', true);
-    //         }
-    //     }
-    //     else {
-    //         this.monekey.angle = ef0;
-    //         this.monkey.display.anfims.play('turn', true);
-    //     }
-    // }
+        else if (this.monkey.angle < 2 && this.monkey.angle > -2){
+            this.monkey.display.anims.play('turn', true);
+        }
+        this.angularForce *= 0.98;
+        this.monkey.angle = this.angularForce;
+    
     }
 }
