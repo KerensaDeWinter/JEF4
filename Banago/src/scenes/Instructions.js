@@ -37,9 +37,9 @@ export class Instructions extends Scene
                 x: 900,
                 y: 100,
             }
-        this.angle = 0;
         this.counter = 1;
         this.checkbar = undefined;
+        this.angularForce = 0;
     }
 
     preload() {
@@ -56,9 +56,9 @@ export class Instructions extends Scene
         this.platforms.create(400, 860, 'ground').setScale(4).refreshBody();
         this.monkey = new MonkeyContainer(this, this.sys.game.config.width/2, 0);
 
-        this.scoreText = this.add.text(16, 16, '', { fontSize: '32px', fill: '#000' });
-        this.scoreText.setText('Bananas: ' + this.score);
-        console.log(this.registry.get('gameMode'));
+        this.scoreImg = this.add.image(40, 50, 'score');
+        this.scoreText = this.add.text(76, 16, '', { fontFamily: 'Jungle Hype', fontSize: 65, color: this.style.colors.yellow100, stroke: this.style.colors.black, strokeThickness: 4, });
+        this.scoreText.setText(this.score);
 
         if (this.registry.get('gameMode') !== "singleDrum") {
             this.title=this.add.text(this.sys.game.config.width / 2, 50, 'Vang de bananen', {
@@ -66,14 +66,11 @@ export class Instructions extends Scene
                 align: 'center',
             }).setOrigin(0.5, 0.5);
         } else {
-            this.title=this.add.text(this.sys.game.config.width / 2, 50, 'Jaag de dieren weg', {
+            this.title=this.add.text(this.sys.game.config.width / 2, 50, 'Jaag dieren weg', {
                 fontFamily: 'Jungle Hype', fontSize: 65, color: this.style.colors.orange, stroke: this.style.colors.black, strokeThickness: 4,
                 align: 'center',
             }).setOrigin(0.5, 0.5);
         }
-      
-        
-        // this.scoreText.setText('Bananas: ' + this.score);
 
         this.physics.add.collider(this.bananas, this.platforms);
         this.physics.add.overlap(this.monkey.physicsDisplay1, this.bananas, this.collectBananas, null, this);
@@ -88,7 +85,6 @@ export class Instructions extends Scene
             } else {
                 this.bananas.create(this.bananaLocation.x, this.bananaLocation.y, 'banana').setScale(0.07);
                 this.swingVideo.play(true);
-
             }
         }, 1000);
     }
@@ -108,6 +104,7 @@ export class Instructions extends Scene
                 this.generateAnimal("tiger");
             }, 2000)
         }
+        console.log(this.monkey.display.y);
     }
     generateAnimal(animal) {
         if (this.currentAnimalImage) {
@@ -131,6 +128,7 @@ export class Instructions extends Scene
             this.currentAnimalImage.body.setVelocityX(-50);
         }
         this.physics.add.overlap(this.monkey.physicsDisplay3, this.currentAnimalImage, this.hitByAnimal, null, this);
+        console.log(this.monkey.display.y);
     }
     scareAnimal(animal) {
         if(this.currentAnimal === "toucan" && animal === "toucan") {
@@ -158,7 +156,7 @@ export class Instructions extends Scene
                 this.scene.start('Counter');
             }, 2000)
         }
-           
+        console.log(this.monkey.display.y);
     }
     collectBananas (player, banana) 
     {
@@ -168,7 +166,7 @@ export class Instructions extends Scene
     
         //  Add and update the score
         this.score += 1;
-        this.scoreText.setText('Bananas: ' + this.score);
+        this.scoreText.setText(this.score);
         this.counter= 2;
         if (this.registry.get('gameMode') === "singleRope") {
             setTimeout(() => {
@@ -177,9 +175,9 @@ export class Instructions extends Scene
             }, 2000)
         } else {
             this.generateAnimal("toucan");
-            this.title.setText("Jaag de dieren weg");
+            this.title.setText("Jaag dieren weg");
         }
-        
+        console.log(this.monkey.display.y);
     }
     update ()
     {
@@ -187,62 +185,95 @@ export class Instructions extends Scene
         console.log(this.counter);
         // this.checkbar = this.add.image(this.sys.game.config.width-140, 50, `checkbar-${this.registry.get('gameMode')}-${this.counter}`);
 
+
+        console.log(this.monkey.display); 
+        console.log(this.monkey.display.x, this.monkey.display.y);  
+
         if (this.registry.get('gameMode') !== "singleRope") {
             this.input.keyboard.on('keydown-D', () => {
-                this.lastInteractionTime = 0;
                 this.scareAnimal("toucan");
             });
             this.input.keyboard.on('keydown-B', () => {
-                this.lastInteractionTime = 0;
                 this.scareAnimal("tiger");
             });
         }
         
-        this.monkey.angle = this.angle;
-        this.cursors = this.input.activePointer.worldX / 800 * 100;
+        this.cursors = this.input.keyboard.createCursorKeys();
+        
+        if(this.cursors.left.isDown || this.cursors.up.isDown) {
+            if (this.cursors.left.isDown) {
+                if (this.angularForce < 30) {
+                    this.angularForce += 1;
+                } 
+                else {
+                    this.angularForce = 30;
+                }
 
-        if (this.cursors < 45) {
-            this.monkey.angle = 50-this.cursors;
-            if (Math.abs(this.monkey.angle) >= 40) {
-                this.monkey.display.anims.play('left5', true);
+            } else {
+                if (this.angularForce < 50) {
+                    this.angularForce += 1;
+                } else {
+                    this.angularForce = 50;
+                }
             }
-            else if (Math.abs(this.monkey.angle) >= 30) {
-                this.monkey.display.anims.play('left4', true);
-            }
-            else if (Math.abs(this.monkey.angle) >= 20) {
-                this.monkey.display.anims.play('left3', true);
-            }
-            else if (Math.abs(this.monkey.angle) >= 10) {
-                this.monkey.display.anims.play('left2', true);
-            }
-            else if (Math.abs(this.monkey.angle) >= 0) {
-                this.monkey.display.anims.play('left1', true);
-            }
-        }
-        else if (this.cursors >= 99.5) {
-            this.monkey.angle = -50;
-        }
-        else if (this.cursors > 55){
-            this.monkey.angle = 50-this.cursors;
-            if (Math.abs(this.monkey.angle) >= 40) {
-                console.log("hier");
-                this.monkey.display.anims.play('right4', true);
-            }
-            else if (Math.abs(this.monkey.angle) >= 30) {
-                this.monkey.display.anims.play('right3', true);
-            }
-            else if (Math.abs(this.monkey.angle) >= 20) {
-                this.monkey.display.anims.play('right2', true);
-            }
-            else if (Math.abs(this.monkey.angle) >= 10) {
-                this.monkey.display.anims.play('right1', true);
-            }
-            else if (Math.abs(this.monkey.angle) >= 0) {
-                this.monkey.display.anims.play('turn', true);
+        } else if (this.cursors.right.isDown || this.cursors.down.isDown) {
+            if (this.cursors.right.isDown) {
+                if (this.angularForce > -30) {
+                    this.angularForce -= 1;
+                } 
+                else {
+                    this.angularForce = -30;
+                }
+            } else {
+                if (this.angularForce > -50) {
+                    this.angularForce -= 1;
+                } else {
+                    this.angularForce = -50;
+                }
             }
         }
-        else {
-            this.monkey.angle = 0;
+        // else if (this.monkey.angle < 2 && this.monkey.angle > -2){
+        //     this.monkey.display.anims.play('turn', true);
+        // }
+
+        if (!this.cursors.left.isDown && !this.cursors.right.isDown && !this.cursors.up.isDown && !this.cursors.down.isDown) {
+            if (Math.abs(this.monkey.angle) <= 30) {
+                this.angularForce *= 0.95;
+            } else {
+                this.angularForce *= 0.98;
+            }
+        }
+        this.monkey.angle = this.angularForce;
+
+        if (this.monkey.angle >= 40) {
+            this.monkey.display.anims.play('left5', true);
+        }
+        else if (this.monkey.angle >= 30) {
+            this.monkey.display.anims.play('left4', true);
+        }
+        else if (this.monkey.angle >= 20) {
+            this.monkey.display.anims.play('left3', true);
+        }
+        else if (this.monkey.angle >= 10) {
+            this.monkey.display.anims.play('left2', true);
+        }
+        else if (this.monkey.angle >= 0) {
+            this.monkey.display.anims.play('left1', true);
+        }
+
+        if (this.monkey.angle <= -40) {
+            this.monkey.display.anims.play('right4', true);
+        }
+        else if (this.monkey.angle <= -30) {
+            this.monkey.display.anims.play('right3', true);
+        }
+        else if (this.monkey.angle <= -20) {
+            this.monkey.display.anims.play('right2', true);
+        }
+        else if (this.monkey.angle <= -10) {
+            this.monkey.display.anims.play('right1', true);
+        }
+        else if (this.monkey.angle <= 0) {
             this.monkey.display.anims.play('turn', true);
         }
     }

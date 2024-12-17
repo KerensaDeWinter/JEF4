@@ -12,11 +12,11 @@ export class SingleSelection extends Scene
     {
         this.input.keyboard.on('keydown-B', () => {
 			this.registry.set('gameMode', "singleRope");
-            this.scene.start('Instructions'); 
+            this.scene.start('Story'); 
         });
 		this.input.keyboard.on('keydown-D', () => {
 			this.registry.set('gameMode', "singleDrum");
-            this.scene.start('Instructions'); 
+            this.scene.start('Story'); 
         });
     }
 

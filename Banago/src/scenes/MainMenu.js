@@ -24,7 +24,7 @@ export class MainMenu extends Scene
 
         this.input.keyboard.on('keydown-Q', () => {
 			this.registry.set('gameMode', "multi");
-            this.scene.start('Story'); 
+            this.scene.start('Instructions'); 
         });
 		this.input.keyboard.on('keydown-B', () => {
             this.scene.start('SingleSelection'); 

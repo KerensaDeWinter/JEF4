@@ -22,7 +22,6 @@ export class GameSingleRope extends Scene
         this.monkey = MonkeyContainer;
         this.timer = undefined;
         this.timeInSeconds = undefined;
-        this.lastInteractionTime = 0;
         this.bananaLocations = [
             {
                 x: 210,
@@ -61,15 +60,15 @@ export class GameSingleRope extends Scene
         this.running = true;
         this.timeInSeconds = this.registry.get('time');
         this.score = this.registry.get('score');
-        this.lastInteractionTime = 0;
         this.background = this.add.image(this.sys.game.config.width/2, this.sys.game.config.height/2, 'background');
         this.platforms = this.physics.add.staticGroup();
         this.bananas = this.physics.add.group();
         this.platforms.create(400, 860, 'ground').setScale(4).refreshBody();
         this.monkey = new MonkeyContainer(this, this.sys.game.config.width/2, 0);
 
-        this.scoreText = this.add.text(16, 16, '', { fontSize: '32px', fill: '#000' });
-        this.scoreText.setText('Bananas: ' + this.score);
+        this.scoreImg = this.add.image(40, 50, 'score');
+        this.scoreText = this.add.text(76, 16, '', { fontFamily: 'Jungle Hype', fontSize: 65, color: this.style.colors.yellow100, stroke: this.style.colors.black, strokeThickness: 4, });
+        this.scoreText.setText(this.score);
 
         this.physics.add.collider(this.bananas, this.platforms);
         this.physics.add.overlap(this.monkey.physicsDisplay1, this.bananas, this.collectBananas, null, this);
@@ -92,7 +91,6 @@ export class GameSingleRope extends Scene
     }
 
     updateTimer() {
-        this.lastInteractionTime++;
         this.timeInSeconds--;
         let minutes = Math.floor(this.timeInSeconds / 60);
         let seconds = this.timeInSeconds - (minutes * 60);
@@ -122,7 +120,7 @@ export class GameSingleRope extends Scene
     
         //  Add and update the score
         this.score += 1;
-        this.scoreText.setText('Bananas: ' + this.score);
+        this.scoreText.setText(this.score);
         this.registry.set('score', this.score);
     
         if (this.bananas.countActive(true) === 0)

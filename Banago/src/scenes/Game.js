@@ -23,7 +23,6 @@ export class Game extends Scene
         this.monkey = MonkeyContainer;
         this.timer = undefined;
         this.timeInSeconds = undefined;
-        this.lastInteractionTime = 0;
         this.animals = [{
             name: "parrot",
             x: 1200,
@@ -61,15 +60,15 @@ export class Game extends Scene
                 y: 100,
             },
             {
-                x: 1000,
+                x: 820,
                 y: 100,
             },
             {
-                x: 1030,
+                x: 850,
                 y: 150,
             },
             {
-                x: 1020,
+                x: 800,
                 y: 100,
             }
         ]
@@ -85,15 +84,15 @@ export class Game extends Scene
         this.running = true;
         this.timeInSeconds = this.registry.get('time');
         this.score = this.registry.get('score');
-        this.lastInteractionTime = 0;
         this.background = this.add.image(this.sys.game.config.width/2, this.sys.game.config.height/2, 'background');
         this.platforms = this.physics.add.staticGroup();
         this.bananas = this.physics.add.group();
         this.platforms.create(400, 860, 'ground').setScale(4).refreshBody();
         this.monkey = new MonkeyContainer(this, this.sys.game.config.width/2, 0);
 
-        this.scoreText = this.add.text(16, 16, '', { fontSize: '32px', fill: '#000' });
-        this.scoreText.setText('Bananas: ' + this.score);
+        this.scoreImg = this.add.image(40, 50, 'score');
+        this.scoreText = this.add.text(76, 16, '', { fontFamily: 'Jungle Hype', fontSize: 65, color: this.style.colors.yellow100, stroke: this.style.colors.black, strokeThickness: 4, });
+        this.scoreText.setText(this.score);
 
         this.physics.add.collider(this.bananas, this.platforms);
         this.physics.add.overlap(this.monkey.physicsDisplay1, this.bananas, this.collectBananas, null, this);
@@ -102,22 +101,24 @@ export class Game extends Scene
         this.timeText = this.add.text(220, 30, "3:00",{font: '30px Arial', fill: 
         '#FFFFFF', align: 'center'});
 
-        setInterval(() =>{
-            if (this.running) {
-                this.generateAnimal();
-            }
-        }, Phaser.Math.Between(6000, 9000));
+        this.time.addEvent({
+            delay: Phaser.Math.Between(6000, 9000), 
+            callback: this.generateAnimal,
+            callbackScope: this, 
+            loop: true, 
+        });
         this.time.addEvent({
             delay: 1000, 
             callback: this.updateTimer,
             callbackScope: this, 
             repeat: 180, 
         });
-        setInterval(() =>{
-            if (this.running) {
-                this.randomizeBananas();
-            }
-        }, 2000)
+        this.time.addEvent({
+            delay: 2000, 
+            callback: this.randomizeBananas,
+            callbackScope: this, 
+            loop: true, 
+        });
     }
 
    
@@ -184,7 +185,6 @@ export class Game extends Scene
         }
     }
     updateTimer() {
-        this.lastInteractionTime++;
         this.timeInSeconds--;
         let minutes = Math.floor(this.timeInSeconds / 60);
         let seconds = this.timeInSeconds - (minutes * 60);
@@ -214,7 +214,7 @@ export class Game extends Scene
     
         //  Add and update the score
         this.score += 1;
-        this.scoreText.setText('Bananas: ' + this.score);
+        this.scoreText.setText(this.score);
         this.registry.set('score', this.score);
     
         if (this.bananas.countActive(true) === 0)
@@ -240,22 +240,18 @@ export class Game extends Scene
         // Na 2 min dieren vallen sneller aan
 
         this.input.keyboard.on('keydown-D', () => {
-            this.lastInteractionTime = 0;
             this.scareAnimal("toucan");
         });
         this.input.keyboard.on('keydown-B', () => {
-            this.lastInteractionTime = 0;
             this.scareAnimal("tiger");
         });
         this.input.keyboard.on('keydown-Q', () => {
-            this.lastInteractionTime = 0;
             this.scareAnimal("parrot");
         });
         this.input.keyboard.on('keydown-C', () => {
-            this.lastInteractionTime = 0;
             this.scareAnimal("snake");
         });
-        
+
         if (this.timeInSeconds === 0) {
             this.running = false;
             this.registry.set('gameOver', "timer");

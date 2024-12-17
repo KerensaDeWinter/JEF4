@@ -20,21 +20,17 @@ export class Counter extends Scene
         this.style = new GlobalStyles(); // moet er altijd in
         this.background = this.add.image(this.sys.game.config.width / 2, this.sys.game.config.height / 2, 'counter-background');
         this.background.setScale(0.72);
-
-      
-
-        this.add.image(this.sys.game.config.width/2, this.sys.game.config.height/1.6, 'drumO');
-        this.add.video(this.sys.game.config.width/2, this.sys.game.config.height/1.6, 'start');
+        
         this.timeText = this.add.text(this.sys.game.config.width / 2, this.sys.game.config.height / 2, 'Klaar?', {
             fontFamily: 'Jungle Hype', fontSize: 180, color: this.style.colors.orange, stroke: this.style.colors.black, strokeThickness: 4,
             align: 'center',
         }).setOrigin(0.5, 0.5);
 
         this.time.addEvent({
-            delay: 1000, // one second!
+            delay: 1000, 
             callback: this.updateTimer,
-            callbackScope: this, // this looks at the scene :)
-            repeat: 4, // repeat this 4 times than you have 5
+            callbackScope: this,
+            repeat: 4, 
         });
 
         //Britt, your old code

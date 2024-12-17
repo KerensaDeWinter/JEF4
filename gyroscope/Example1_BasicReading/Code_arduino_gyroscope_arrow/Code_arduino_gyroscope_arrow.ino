@@ -45,12 +45,12 @@ void loop() {
     } 
 
 // angle groter dan 5 met arrow boven
-    if (angle > 5) {
+    if (angle > 3) {
       Keyboard.release(KEY_LEFT_ARROW);
       Keyboard.release(KEY_UP_ARROW);
       Keyboard.release(KEY_RIGHT_ARROW);
       Keyboard.press(KEY_DOWN_ARROW);
-    } else if (angle < -5) {
+    } else if (angle < -3) {
       Keyboard.release(KEY_LEFT_ARROW);
       Keyboard.release(KEY_DOWN_ARROW);
       Keyboard.release(KEY_RIGHT_ARROW);

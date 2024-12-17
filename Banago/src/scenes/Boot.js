@@ -58,7 +58,7 @@ export class Boot extends Scene
         this.load.image('checkbar-multi-5', 'checkbar-multi-5.png');
         this.load.image('checkbar-multi-6', 'checkbar-multi-6.png');
 
-
+        this.load.image('score', 'score.png');
     }
 
     create ()
