@@ -3,11 +3,11 @@ import { Game } from './scenes/Game';
 import { GameOver } from './scenes/GameOver';
 import { MainMenu } from './scenes/MainMenu';
 import { Instructions } from './scenes/Instructions';
-import { Pause } from './scenes/Pause';
 import { Counter } from './scenes/Counter';
 import { GameSingleDrum } from './scenes/GameSingleDrum';
 import { GameSingleRope } from './scenes/GameSingleRope';
 import { Story } from './scenes/Story';
+import { SingleSelection } from './scenes/SingleSelection';
 
 
 //  Find out more information about the Game Config at:
@@ -17,7 +17,7 @@ const config = {
     width: window.innerHeight*1.3333,
     height: window.innerHeight,
     parent: 'game-container',
-    backgroundColor: '#028af8',
+    backgroundColor: 'green',
     scale: {
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH
@@ -37,12 +37,12 @@ const config = {
         GameSingleDrum,
         GameSingleRope,
         GameOver,
-        Pause,
         Counter,
-        Story
+        Story,
+        SingleSelection
     ],
     fps: {
-        target: 9600,
+        target: 60,
         forceSetTimeOut: true,
     }
 };

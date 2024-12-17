@@ -7,7 +7,6 @@ import { GameOverTiger } from './scenes/GameOver-tiger';
 import { GameOverToucan } from './scenes/GameOver-toucan';
 import { MainMenu } from './scenes/MainMenu';
 import { Instructions } from './scenes/Instructions';
-import { Pause } from './scenes/Pause';
 import { Counter } from './scenes/Couter';
 import { GameSingleDrum } from './scenes/GameSingleDrum';
 import { GameSingleRope } from './scenes/GameSingleRope';

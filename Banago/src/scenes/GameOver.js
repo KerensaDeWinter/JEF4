@@ -14,23 +14,14 @@ export class GameOver extends Scene
 
     create ()
     {
-        // let canvas = document.getElementById('game-container');
-        // canvas.requestPointerLock({
-        //     unadjustedMovement: true,
-        //   });
-
-
-        // Britt: hier wilde ik proberen om de score te tonen,
-        // this.score = this.registry.get('score');
-        // this.scoreText = this.add.text(16, 16, '', { fontSize: '2000px', fill: '#000' });
-        // this.scoreText.setText('Bananas: ' + this.score);
-
-
-
         this.scene.stop('Game');
 
         this.style = new GlobalStyles(); // moet er altijd in
-        this.background = this.add.image(this.sys.game.config.width / 2, this.sys.game.config.height / 2, 'gameover-timer');
+        if (this.registry.get('gameOver') === "timer") {
+            this.background = this.add.image(this.sys.game.config.width / 2, this.sys.game.config.height / 2, 'gameover-timer');
+        } else {
+            this.background = this.add.image(this.sys.game.config.width / 2, this.sys.game.config.height / 2, 'gameover-animal');
+        }
         this.background.setScale(0.72);
 
         this.add.text((this.sys.game.config.width / 2)+50, this.sys.game.config.height - 120, '2', {

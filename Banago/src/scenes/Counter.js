@@ -45,7 +45,13 @@ export class Counter extends Scene
         // }, 1000);
         setTimeout(()=> {
             this.running = false;
-            this.scene.start('GameSingleDrum');
+            if (this.registry.get('gameMode') === "multi") {
+                this.scene.start('Game');
+            } else if (this.registry.get('gameMode') === "singleDrum") {
+                this.scene.start('GameSingleDrum');
+            } else {
+                this.scene.start('GameSingleRope');
+            }
         }, 6000);
     }
   

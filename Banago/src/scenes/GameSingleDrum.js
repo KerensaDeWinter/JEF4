@@ -107,11 +107,12 @@ export class GameSingleDrum extends Scene
                 this.generateAnimal();
             }
         }, Phaser.Math.Between(6000, 9000));
-        setInterval(() =>{
-            if (this.running) {
-                this.timer = this.updateTimer();
-            }
-        }, 1000)
+        this.time.addEvent({
+            delay: 1000, 
+            callback: this.updateTimer,
+            callbackScope: this, 
+            repeat: 180, 
+        });
         setInterval(() =>{
             if (this.running) {
                 this.randomizeBananas();
@@ -119,21 +120,16 @@ export class GameSingleDrum extends Scene
         }, 2000)
     }
 
-
-    openInstructions() {
-        const instructions = document.querySelector('dialog');
-        instructions.showModal();
-    }
-
     hitByAnimal() {
         if (this.currentAnimal.name != "") {
             this.running = false;
             switch (this.currentAnimal.name) {
-                case "parrot": this.scene.start(`GameOverParrot`);
-                case "toucan": this.scene.start(`GameOverToucan`);
-                case "tiger": this.scene.start(`GameOverTiger`);
-                case "snake": this.scene.start(`GameOverSnake`);
+                case "parrot": this.registry.set("gameOver", "parrot");
+                case "toucan": this.registry.set("gameOver", "toucan");
+                case "tiger": this.registry.set("gameOver", "tiger");
+                case "snake": this.registry.set("gameOver", "snake");
             }
+            this.scene.start("GameOver");
         }
     }
     generateAnimal() {
@@ -227,9 +223,6 @@ export class GameSingleDrum extends Scene
     }
     update ()
     {
-        const help = document.querySelector(".help");
-        help.addEventListener('click', () => this.openInstructions);
-
         this.input.keyboard.on('keydown-D', () => {
             this.lastInteractionTime = 0;
             this.scareAnimal("toucan");
@@ -247,25 +240,29 @@ export class GameSingleDrum extends Scene
             this.scareAnimal("snake");
         });
 
-        if (this.lastInteractionTime >= 15) {
-            this.scene.switch('Pause');
-            this.lastInteractionTime = 0;
-        }
-
         if (this.timeInSeconds === 0) {
             this.running = false;
+            this.registry.set('gameOver', "timer");
             this.scene.start('GameOver');
         }
 
-        let direction = -1;
+        let direction = 1;
         const minAngle = -50;
         const maxAngle = 50;
-        const speed = 2; 
 
-        this.monkey.angle += direction * speed;
 
-        if (this.monkey.angle >= maxAngle || this.monkey.angle <= minAngle) {
-            direction *= -1;
+        if (this.monkey.angle >= maxAngle) {
+            this.monkey.angle = maxAngle;  
+            direction = -1; 
+        } else if (this.monkey.angle <= minAngle) {
+            this.monkey.angle = minAngle;  
+            direction = 1;  
+        } else {
+            this.monkey.angle += direction;
         }
+        console.log(this.monkey.angle);
+        console.log(direction);
+
+
     }
 }

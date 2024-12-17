@@ -10,11 +10,9 @@ export class Story extends Scene
 
     create ()
     {
-        this.video = this.add.video(this.sys.game.config.width, this.sys.game.config.height, 'story');
-
-        setTimeout(() => {
-            this.video.play();
-        }, 100);
+        this.video = this.add.video(this.sys.game.config.width/2, this.sys.game.config.height/2, 'story');
+        this.video.setScale(0.68);
+        this.video.play();
 
         setTimeout(() => {
             this.scene.start('Instructions'); 

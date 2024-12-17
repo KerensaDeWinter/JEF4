@@ -10,10 +10,6 @@ export class MainMenu extends Scene
 
     create ()
     {
-        // let canvas = document.getElementById('game-container');
-        // canvas.requestPointerLock({
-        //     unadjustedMovement: true,
-        // });
         this.registry.set('score', 0);
         this.registry.set('time', 180);
         this.registry.set('gameMode', undefined);
@@ -23,11 +19,6 @@ export class MainMenu extends Scene
         this.background = this.add.image(this.sys.game.config.width/2, this.sys.game.config.height/2, 'start-screen');
 		this.background.setScale(0.72);
 
-        // this.add.text(this.sys.game.config.width/2, this.sys.game.config.height/3, 'BANAGO', {
-        //     fontFamily: 'Jungle Hype', fontSize: 180, color: this.style.colors.orange,
-        //     align: 'center',
-        // }).setOrigin(0.5, 0.5);
-
         this.add.image(this.sys.game.config.width/2, this.sys.game.config.height/1.6, 'drumO');
         this.add.video(this.sys.game.config.width/2, this.sys.game.config.height/1.6, 'start');
 
@@ -36,13 +27,7 @@ export class MainMenu extends Scene
             this.scene.start('Story'); 
         });
 		this.input.keyboard.on('keydown-B', () => {
-			this.registry.set('gameMode', "singleRope");
-            this.scene.start('GameSingleRope'); 
-        });
-		this.input.keyboard.on('keydown-D', () => {
-			this.registry.set('gameMode', "singleDrum");
-            this.scene.start('GameSingleDrum'); 
-
+            this.scene.start('SingleSelection'); 
         });
 		this.createAnims();
     }
@@ -91,6 +76,31 @@ export class MainMenu extends Scene
 		});
         this.anims.create({
 			key: 'tigerDead',
+			frames: this.anims.generateFrameNumbers('tiger', { start: 2, end: 3 }),
+			frameRate: 5,
+			repeat: -1
+		});
+
+        this.anims.create({
+			key: 'toucanI',
+			frames: this.anims.generateFrameNumbers('toucan', { start: 0, end: 1 }),
+			frameRate: 5,
+			repeat: -1
+		});
+        this.anims.create({
+			key: 'toucanIDead',
+			frames: this.anims.generateFrameNumbers('toucan', { start: 2, end: 3 }),
+			frameRate: 5,
+			repeat: -1
+		});
+        this.anims.create({
+			key: 'tigerI',
+			frames: this.anims.generateFrameNumbers('tiger', { start: 0, end: 1 }),
+			frameRate: 5,
+			repeat: -1
+		});
+        this.anims.create({
+			key: 'tigerIDead',
 			frames: this.anims.generateFrameNumbers('tiger', { start: 2, end: 3 }),
 			frameRate: 5,
 			repeat: -1
