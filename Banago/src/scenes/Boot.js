@@ -13,9 +13,8 @@ export class Boot extends Scene
         this.load.spritesheet('monkey', 'monkey-sprite.png', { frameWidth: 880, frameHeight: 1264 }); // 880 width
         this.load.image('background', 'Background.png');
 
-        //Britt
         this.load.image('gameover-timer', 'gameover-timer.png');
-        this.load.image('gameover-animal', 'gameover-sad.png');
+        this.load.image('gameover-animal', 'gameover-animal.png');
         this.load.image('start-screen', 'start-screen.png');
         this.load.image('instruction-background', 'instruction-background.png');
         this.load.image('counter-background', 'countdown.png');
@@ -37,9 +36,21 @@ export class Boot extends Scene
 
         this.load.audio('monkeySound', 'sound/monkey.mp3');
 
+        this.load.audio('drum', 'sound/drum.mp3');
+        this.load.audio('gameModeButtons', 'sound/gameModeButtons.mp3');
+        this.load.audio('gameoverSad', 'sound/gameoverSad.mp3');
+        this.load.audio('gameoverHappy', 'sound/gameoverHappy.mp3');
+        this.load.audio('middleButtons', 'sound/middleButtons.mp3');
+        this.load.audio('storytelling', 'sound/storytelling.mp3');
+
+        this.load.audio('parrotSound', 'sound/parrot.mp3');
+        this.load.audio('snakeSound', 'sound/snake.mp3');
+        this.load.audio('tigerSound', 'sound/tiger.mp3');
+        this.load.audio('toucanSound', 'sound/toekan.mp3');
+
         this.load.video('instructionswing', 'instructionswing.webm', true, true);
-        this.load.video('instructiontoucan', 'instructiontoucan.mp4', true, true);
-        this.load.video('instructiontiger', 'instructiontiger.mp4', true, true);
+        this.load.video('instructiontoucan', 'instructiontoucan.webm', true, true);
+        this.load.video('instructiontiger', 'instructiontiger.webm', true, true);
 
         this.load.video('story', 'story.mp4', true);
 
@@ -59,6 +70,17 @@ export class Boot extends Scene
         this.load.image('checkbar-multi-6', 'checkbar-multi-6.png');
 
         this.load.image('score', 'score.png');
+        this.load.image('playselection', 'playselection.png');
+
+        this.load.video('intro', 'intro.mp4', true, true);
+        this.load.video('help', 'help.mp4', true, true);
+        this.load.image('clock', 'clock.png');
+        this.load.image('helpButton', 'help.png');
+
+        this.load.video('hitbytoucan', 'hitByToucan.webm', true, true);
+        this.load.video('hitbysnake', 'hitBySnake.webm', true, true);
+        this.load.video('hitbyparrot', 'hitByParrot.webm', true, true);
+        this.load.video('hitbytiger', 'hitByTiger.webm', true, true);
     }
 
     create ()

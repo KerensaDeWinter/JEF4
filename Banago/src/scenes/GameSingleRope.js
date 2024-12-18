@@ -1,6 +1,6 @@
 import { Scene } from 'phaser';
 import Phaser from 'phaser';
-
+import { GlobalStyles } from '../styles/GlobalStyles';
 
 import MonkeyContainer from '../containers/MonkeyContainer'
 
@@ -24,28 +24,28 @@ export class GameSingleRope extends Scene
         this.timeInSeconds = undefined;
         this.bananaLocations = [
             {
-                x: 210,
+                x: 160,
                 y: 100,
+            },
+            {
+                x: 210,
+                y: 180,
             },
             {
                 x: 220,
-                y: 150,
+                y: 120,
             },
             {
-                x: 230,
-                y: 100,
-            },
-            {
-                x: 1000,
-                y: 100,
+                x: 980,
+                y: 120,
             },
             {
                 x: 1030,
-                y: 150,
+                y: 180,
             },
             {
-                x: 1020,
-                y: 100,
+                x: 1050,
+                y: 140,
             }
         ]
         this.angularForce = 0;
@@ -57,25 +57,39 @@ export class GameSingleRope extends Scene
 
     create ()
     {
+        this.style = new GlobalStyles(); 
         this.running = true;
         this.timeInSeconds = this.registry.get('time');
         this.score = this.registry.get('score');
         this.background = this.add.image(this.sys.game.config.width/2, this.sys.game.config.height/2, 'background');
         this.platforms = this.physics.add.staticGroup();
         this.bananas = this.physics.add.group();
-        this.platforms.create(400, 860, 'ground').setScale(4).refreshBody();
+        this.platforms.create(400, 970, 'ground').setScale(4).refreshBody();
         this.monkey = new MonkeyContainer(this, this.sys.game.config.width/2, 0);
 
         this.scoreImg = this.add.image(40, 50, 'score');
         this.scoreText = this.add.text(76, 16, '', { fontFamily: 'Jungle Hype', fontSize: 65, color: this.style.colors.yellow100, stroke: this.style.colors.black, strokeThickness: 4, });
         this.scoreText.setText(this.score);
 
+        this.help = this.add.image(1090, 840, "helpButton");
+        this.help.setScale(0.8);
+
+        this.helpVideo = this.add.video(this.sys.game.config.width/2, this.sys.game.config.height/2, 'help');
+        this.helpVideo.setScale(0.7);
+        this.helpVideo.depth = 100;
+
+        this.overlay = this.add.graphics();
+        this.overlay.fillStyle(0x000000, 0.5); 
+        this.overlay.fillRect(0, 0, 1200, 900); 
+        this.overlay.setVisible(false); 
+        this.overlay.depth = 90;
+
         this.physics.add.collider(this.bananas, this.platforms);
         this.physics.add.overlap(this.monkey.physicsDisplay1, this.bananas, this.collectBananas, null, this);
         this.physics.add.overlap(this.monkey.physicsDisplay2, this.bananas, this.collectBananas, null, this);
 
-        this.timeText = this.add.text(220, 30, "3:00",{font: '30px Arial', fill: 
-        '#FFFFFF', align: 'center'});
+        this.add.image(1050, 50, "clock");
+        this.timeText = this.add.text(1080, 16, "3:00",{fontFamily: 'Jungle Hype', fontSize: 65, color: this.style.colors.yellow100, stroke: this.style.colors.black, strokeThickness: 4, });
 
         this.time.addEvent({
             delay: 1000, 
@@ -83,18 +97,42 @@ export class GameSingleRope extends Scene
             callbackScope: this, 
             repeat: 180, 
         });
-        setInterval(() =>{
-            if (this.running) {
-                this.randomizeBananas();
-            }
-        }, 2000)
+        this.time.addEvent({
+            delay: 2000, 
+            callback: this.randomizeBananas,
+            callbackScope: this, 
+            loop: true, 
+        });
+        this.time.addEvent({
+            delay: 90000, 
+            callback: this.dropBanana,
+            callbackScope: this, 
+            loop: true, 
+        });
+        this.input.keyboard.on('keydown-F', () => {
+            this.noise = this.sound.add('middleButtons');
+            this.noise.play();
+            this.scene.start('MainMenu'); 
+        });
+        this.input.keyboard.on('keydown-G', () => {
+            this.noise = this.sound.add('middleButtons');
+            this.noise.play();
+            this.scene.pause();
+            this.overlay.setVisible(true);
+            this.helpVideo.play();
+        });
+        this.helpVideo.on('complete', () => {
+            this.helpVideo.setVisible(false);
+            this.overlay.setVisible(false);
+            this.scene.resume();
+        }, this);
     }
 
     updateTimer() {
         this.timeInSeconds--;
         let minutes = Math.floor(this.timeInSeconds / 60);
         let seconds = this.timeInSeconds - (minutes * 60);
-        this.timeString = minutes + ":" + seconds;
+        this.timeString = minutes + ":" + (seconds.toString().length < 2 ? "0" + seconds: seconds);
         this.timeText.text = this.timeString;
         this.registry.set('time', this.timeInSeconds);
     }
@@ -110,7 +148,16 @@ export class GameSingleRope extends Scene
                 });
         }
         let location = this.bananaLocations[Phaser.Math.Between(0, 5)];
-        this.bananas.create(location.x, location.y, 'banana').setScale(0.07);
+        this.bananas.create(location.x, location.y, 'banana').setScale(0.07).setFlipX(Phaser.Math.Between(0,1));
+        this.bananas.children.iterate((banana) => {
+            this.time.addEvent({
+                delay: 2000, 
+                callback: this.shakeBanana(banana),
+                callbackScope: this, 
+                loop: true, 
+            });
+            this.shakeBanana(banana);
+        });
     }
     collectBananas (player, banana) 
     {
@@ -135,6 +182,25 @@ export class GameSingleRope extends Scene
             var x = (player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
         }
     }
+    dropBanana() {
+        if (this.bananas.getLength()>0) {
+            let random = Phaser.Math.Between(1,this.bananas.getLength());
+            this.banana = this.bananas.children.entries.at(random).body.setGravityY(300);
+            this.timeInSeconds-=10;
+        }
+    }
+    shakeBanana(banana) {
+        this.tweens.add({
+            targets: banana, 
+            x: {
+                value: `+=${Phaser.Math.Between(10,15)}`,
+                duration: 90,
+                yoyo: true, 
+                repeat: 3,
+            },
+            ease: 'Sine.easeInOut'
+        });
+    }
     update ()
     {
         if (this.timeInSeconds === 0) {
@@ -147,35 +213,35 @@ export class GameSingleRope extends Scene
         
         if(this.cursors.left.isDown || this.cursors.up.isDown) {
             if (this.cursors.left.isDown) {
-                if (this.angularForce < 30) {
+                if (this.angularForce < 20) {
                     this.angularForce += 1;
                 } 
                 else {
-                    this.angularForce = 30;
+                    this.angularForce = 20;
                 }
                 console.log(this.angularForce);
 
             } else {
-                if (this.angularForce < 50) {
+                if (this.angularForce < 40) {
                     this.angularForce += 1;
                 } else {
-                    this.angularForce = 50;
+                    this.angularForce = 40;
                 }
                 console.log(this.angularForce);
             }
         } else if (this.cursors.right.isDown || this.cursors.down.isDown) {
             if (this.cursors.right.isDown) {
-                if (this.angularForce > -30) {
+                if (this.angularForce > -20) {
                     this.angularForce -= 1;
                 } 
                 else {
-                    this.angularForce = -30;
+                    this.angularForce = -20;
                 }
             } else {
-                if (this.angularForce > -50) {
+                if (this.angularForce > -40) {
                     this.angularForce -= 1;
                 } else {
-                    this.angularForce = -50;
+                    this.angularForce = -40;
                 }
             }
         }
@@ -184,40 +250,36 @@ export class GameSingleRope extends Scene
         }
 
         if (!this.cursors.left.isDown && !this.cursors.right.isDown && !this.cursors.up.isDown && !this.cursors.down.isDown) {
-            if (Math.abs(this.monkey.angle) <= 30) {
-                this.angularForce *= 0.95;
-            } else {
-                this.angularForce *= 0.98;
-            }
+            this.angularForce *= 0.95;
         }
         this.monkey.angle = this.angularForce;
 
-        if (this.monkey.angle >= 40) {
+        if (this.monkey.angle >= 30) {
             this.monkey.display.anims.play('left5', true);
         }
-        else if (this.monkey.angle >= 30) {
+        else if (this.monkey.angle >= 20) {
             this.monkey.display.anims.play('left4', true);
         }
-        else if (this.monkey.angle >= 20) {
+        else if (this.monkey.angle >= 10) {
             this.monkey.display.anims.play('left3', true);
         }
-        else if (this.monkey.angle >= 10) {
+        else if (this.monkey.angle >= 5) {
             this.monkey.display.anims.play('left2', true);
         }
         else if (this.monkey.angle >= 0) {
             this.monkey.display.anims.play('left1', true);
         }
 
-        if (this.monkey.angle <= -40) {
+        if (this.monkey.angle <= -30) {
             this.monkey.display.anims.play('right4', true);
         }
-        else if (this.monkey.angle <= -30) {
+        else if (this.monkey.angle <= -20) {
             this.monkey.display.anims.play('right3', true);
         }
-        else if (this.monkey.angle <= -20) {
+        else if (this.monkey.angle <= -10) {
             this.monkey.display.anims.play('right2', true);
         }
-        else if (this.monkey.angle <= -10) {
+        else if (this.monkey.angle <= -5) {
             this.monkey.display.anims.play('right1', true);
         }
         else if (this.monkey.angle <= 0) {

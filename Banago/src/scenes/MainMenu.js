@@ -16,20 +16,16 @@ export class MainMenu extends Scene
         this.registry.set('gameOver', undefined);
 
         this.style = new GlobalStyles(); // moet er altijd in
-        this.background = this.add.image(this.sys.game.config.width/2, this.sys.game.config.height/2, 'start-screen');
-		this.background.setScale(0.72);
-
-        this.add.image(this.sys.game.config.width/2, this.sys.game.config.height/1.6, 'drumO');
-        this.add.video(this.sys.game.config.width/2, this.sys.game.config.height/1.6, 'start');
+        this.background = this.add.video(this.sys.game.config.width/2, this.sys.game.config.height/2, 'intro');
+		this.background.play(true);
 
         this.input.keyboard.on('keydown-Q', () => {
-			this.registry.set('gameMode', "multi");
-            this.scene.start('Instructions'); 
+            this.scene.start('PlaySelection'); 
         });
-		this.input.keyboard.on('keydown-B', () => {
-            this.scene.start('SingleSelection'); 
-        });
-		this.createAnims();
+
+		if (!this.anims.exists('left1')) {
+			this.createAnims();
+		}
     }
     createAnims() {
         this.anims.create({
@@ -83,7 +79,7 @@ export class MainMenu extends Scene
 
         this.anims.create({
 			key: 'toucanI',
-			frames: this.anims.generateFrameNumbers('toucan', { start: 0, end: 1 }),
+			frames: this.anims.generateFrameNumbers('toucanI', { start: 0, end: 1 }),
 			frameRate: 5,
 			repeat: -1
 		});
@@ -95,7 +91,7 @@ export class MainMenu extends Scene
 		});
         this.anims.create({
 			key: 'tigerI',
-			frames: this.anims.generateFrameNumbers('tiger', { start: 0, end: 1 }),
+			frames: this.anims.generateFrameNumbers('tigerI', { start: 0, end: 1 }),
 			frameRate: 5,
 			repeat: -1
 		});
@@ -169,5 +165,5 @@ export class MainMenu extends Scene
 			repeat: 1
 		});
     }
-
 }
+

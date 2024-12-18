@@ -70,20 +70,20 @@ export default class MonkeyContainer extends Phaser.GameObjects.Container
 		const radius = 20
 
 		this.circle1 = scene.add.circle(
-			-220, (height/3.15),
+			-230, (height/3.25),
 			radius,
 			undefined,
 			0
 		)
 		this.circle2 = scene.add.circle(
-			220, (height/3.15),
+			260, (height/3.25),
 			radius,
 			undefined,
 			0
 		)
 		this.ellipse = scene.add.ellipse(
 			0, height/3.5,
-			width/4,
+			width/5,
 			height/2,
 			undefined,
 			0

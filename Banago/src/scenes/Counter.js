@@ -6,7 +6,6 @@ export class Counter extends Scene
     constructor ()
     {
         super('Counter');
-        //Britt, use remainingTime instead of time, this vloekt with phaser apparently
         this.remainingTime = 6;
         this.timeText = undefined;
         this.running = undefined;
@@ -19,8 +18,7 @@ export class Counter extends Scene
         this.running = true;
         this.style = new GlobalStyles(); // moet er altijd in
         this.background = this.add.image(this.sys.game.config.width / 2, this.sys.game.config.height / 2, 'counter-background');
-        this.background.setScale(0.72);
-        
+
         this.timeText = this.add.text(this.sys.game.config.width / 2, this.sys.game.config.height / 2, 'Klaar?', {
             fontFamily: 'Jungle Hype', fontSize: 180, color: this.style.colors.orange, stroke: this.style.colors.black, strokeThickness: 4,
             align: 'center',
@@ -32,13 +30,6 @@ export class Counter extends Scene
             callbackScope: this,
             repeat: 4, 
         });
-
-        //Britt, your old code
-        // setInterval(() => {
-        //     if (this.running) {
-        //         this.updateTimer();
-        //     }
-        // }, 1000);
         setTimeout(()=> {
             this.running = false;
             if (this.registry.get('gameMode') === "multi") {
@@ -49,6 +40,11 @@ export class Counter extends Scene
                 this.scene.start('GameSingleRope');
             }
         }, 6000);
+        this.input.keyboard.on('keydown-F', () => {
+            this.noise = this.sound.add('middleButtons');
+            this.noise.play();
+            this.scene.start('MainMenu'); 
+        });
     }
   
     updateTimer() {

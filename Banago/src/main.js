@@ -7,15 +7,15 @@ import { Counter } from './scenes/Counter';
 import { GameSingleDrum } from './scenes/GameSingleDrum';
 import { GameSingleRope } from './scenes/GameSingleRope';
 import { Story } from './scenes/Story';
-import { SingleSelection } from './scenes/SingleSelection';
+import { PlaySelection } from './scenes/PlaySelection';
 
 
 //  Find out more information about the Game Config at:
 //  https://newdocs.phaser.io/docs/3.70.0/Phaser.Types.Core.GameConfig
 const config = {
     type: Phaser.AUTO,
-    width: window.innerHeight*1.3333,
-    height: window.innerHeight,
+    width: 1200,
+    height: 900,
     parent: 'game-container',
     backgroundColor: 'green',
     scale: {
@@ -25,8 +25,7 @@ const config = {
     physics: {
         default: 'arcade',
         arcade: {
-            gravity: { y: 0 },
-            debug: true
+            gravity: { y: 0 }
         }
     },
     scene: [
@@ -39,7 +38,7 @@ const config = {
         GameOver,
         Counter,
         Story,
-        SingleSelection
+        PlaySelection
     ],
     fps: {
         target: 60,

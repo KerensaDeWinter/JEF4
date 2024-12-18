@@ -1,6 +1,6 @@
 import { Scene } from 'phaser';
 import Phaser from 'phaser';
-
+import { GlobalStyles } from '../styles/GlobalStyles';
 
 import MonkeyContainer from '../containers/MonkeyContainer'
 
@@ -24,55 +24,59 @@ export class GameSingleDrum extends Scene
         this.timeInSeconds = undefined;
         this.animals = [{
             name: "parrot",
-            x: 1200,
+            x: 1300,
             y: 200,
             from: "right"
         }, {
             name: "tiger",
-            x: 1200,
-            y: 690,
+            x: 1300,
+            y: 780,
             from: "right"
         }, {
             name: "toucan",
-            x: 0,
+            x: -100,
             y: 200,
             from: "left"
         }, {
             name: "snake",
-            x: 0,
-            y: 650,
+            x: -100,
+            y: 780,
             from: "left"
         }];
         this.currentAnimal = "";
         this.currentAnimalImage = undefined;
         this.bananaLocations = [
             {
-                x: 210,
+                x: 160,
                 y: 100,
+            },
+            {
+                x: 210,
+                y: 180,
             },
             {
                 x: 220,
-                y: 150,
+                y: 120,
             },
             {
-                x: 230,
-                y: 100,
-            },
-            {
-                x: 1000,
-                y: 100,
+                x: 980,
+                y: 120,
             },
             {
                 x: 1030,
-                y: 150,
+                y: 180,
             },
             {
-                x: 1020,
-                y: 100,
+                x: 1050,
+                y: 140,
             }
         ]
         this.angle = 0;
         this.running = undefined;
+        this.direction = 1;
+        this.minAngle = -20;
+        this.maxAngle = 20;
+
     }
 
     preload() {
@@ -80,14 +84,16 @@ export class GameSingleDrum extends Scene
 
     create ()
     {
+        this.style = new GlobalStyles(); 
         this.running = true;
         this.timeInSeconds = this.registry.get('time');
         this.score = this.registry.get('score');
         this.background = this.add.image(this.sys.game.config.width/2, this.sys.game.config.height/2, 'background');
         this.platforms = this.physics.add.staticGroup();
         this.bananas = this.physics.add.group();
-        this.platforms.create(400, 860, 'ground').setScale(4).refreshBody();
+        this.platforms.create(400, 970, 'ground').setScale(4).refreshBody();
         this.monkey = new MonkeyContainer(this, this.sys.game.config.width/2, 0);
+        this.monkey.display.anims.play('right4');
 
         this.scoreImg = this.add.image(40, 50, 'score');
         this.scoreText = this.add.text(76, 16, '', { fontFamily: 'Jungle Hype', fontSize: 65, color: this.style.colors.yellow100, stroke: this.style.colors.black, strokeThickness: 4, });
@@ -97,41 +103,93 @@ export class GameSingleDrum extends Scene
         this.physics.add.overlap(this.monkey.physicsDisplay1, this.bananas, this.collectBananas, null, this);
         this.physics.add.overlap(this.monkey.physicsDisplay2, this.bananas, this.collectBananas, null, this);
 
-        this.timeText = this.add.text(220, 30, "3:00",{font: '30px Arial', fill: 
-        '#FFFFFF', align: 'center'});
+        this.help = this.add.image(1090, 840, "helpButton");
+        this.help.setScale(0.8);
 
+        this.helpVideo = this.add.video(this.sys.game.config.width/2, this.sys.game.config.height/2, 'help');
+        this.helpVideo.setScale(0.7);
+        this.helpVideo.depth = 100;
 
-        setInterval(() =>{
-            if (this.running) {
-                this.generateAnimal();
-            }
-        }, Phaser.Math.Between(6000, 9000));
+        this.overlay = this.add.graphics();
+        this.overlay.fillStyle(0x000000, 0.5); 
+        this.overlay.fillRect(0, 0, 1200, 900); 
+        this.overlay.setVisible(false); 
+        this.overlay.depth = 90;
+        
+
+        this.add.image(1050, 50, "clock");
+        this.timeText = this.add.text(1080, 16, "3:00",{fontFamily: 'Jungle Hype', fontSize: 65, color: this.style.colors.yellow100, stroke: this.style.colors.black, strokeThickness: 4, });
+
+        this.hitbytoucan = this.add.video(this.sys.game.config.width/2, this.sys.game.config.height/2, 'hitbytoucan');
+        this.hitbysnake = this.add.video(this.sys.game.config.width/2, this.sys.game.config.height/2, 'hitbysnake');
+        this.hitbyparrot = this.add.video(this.sys.game.config.width/2, this.sys.game.config.height/2, 'hitbyparrot');
+        this.hitbytiger = this.add.video(this.sys.game.config.width/2, this.sys.game.config.height/2, 'hitbytiger');
+        this.hitbytoucan.depth = 200;
+        this.hitbyparrot.depth = 200;
+        this.hitbysnake.depth = 200;
+        this.hitbytiger.depth = 200;
+
+        this.time.addEvent({
+            delay: Phaser.Math.Between(6000, 9000), 
+            callback: this.generateAnimal,
+            callbackScope: this, 
+            loop: true, 
+        });
         this.time.addEvent({
             delay: 1000, 
             callback: this.updateTimer,
             callbackScope: this, 
             repeat: 180, 
         });
-        setInterval(() =>{
-            if (this.running) {
-                this.randomizeBananas();
-            }
-        }, 2000)
+        this.time.addEvent({
+            delay: 2000, 
+            callback: this.randomizeBananas,
+            callbackScope: this, 
+            loop: true, 
+        });
+        this.time.addEvent({
+            delay: 90000, 
+            callback: this.dropBanana,
+            callbackScope: this, 
+            loop: true, 
+        });
+        this.input.keyboard.on('keydown-F', () => {
+            this.noise = this.sound.add('middleButtons');
+            this.noise.play();
+            this.scene.start('MainMenu'); 
+        });
+        this.input.keyboard.on('keydown-G', () => {
+            this.noise = this.sound.add('middleButtons');
+            this.noise.play();
+            this.scene.pause();
+            this.overlay.setVisible(true);
+            this.helpVideo.play();
+        });
+        this.helpVideo.on('complete', () => {
+            this.helpVideo.setVisible(false);
+            this.overlay.setVisible(false);
+            this.scene.resume();
+        }, this);
     }
 
     hitByAnimal() {
         if (this.currentAnimal.name != "") {
             this.running = false;
             switch (this.currentAnimal.name) {
-                case "parrot": this.registry.set("gameOver", "parrot");
-                case "toucan": this.registry.set("gameOver", "toucan");
-                case "tiger": this.registry.set("gameOver", "tiger");
-                case "snake": this.registry.set("gameOver", "snake");
+                case "parrot": this.registry.set('gameOver', "parrot"); this.hitbyparrot.play(); break;
+                case "toucan": this.registry.set('gameOver', "toucan"); this.hitbytoucan.play(); break;
+                case "tiger": this.registry.set('gameOver', "tiger"); this.hitbytiger.play(); break;
+                case "snake": this.registry.set('gameOver', "snake"); this.hitbysnake.play(); break;
             }
-            this.scene.start("GameOver");
+            setTimeout(() => {
+                this.scene.start(`GameOver`);
+            }, 4000)
         }
     }
     generateAnimal() {
+        if (!this.running) {
+            return;
+        }
         if(this.currentAnimal !== "") {
             this.currentAnimalImage.destroy();
         }
@@ -161,7 +219,6 @@ export class GameSingleDrum extends Scene
     }
     scareAnimal(animal) {
         if(this.currentAnimal !== "" && this.currentAnimal.name===animal) {
-            // this.currentAnimalImage.setScale(-1, 1);
             if (this.currentAnimal.from === "left") {
                 this.currentAnimalImage.anims.play(`${this.currentAnimal.name}Dead`, true);
                 this.currentAnimalImage.body.setVelocityX(-200);
@@ -178,7 +235,7 @@ export class GameSingleDrum extends Scene
         this.timeInSeconds--;
         let minutes = Math.floor(this.timeInSeconds / 60);
         let seconds = this.timeInSeconds - (minutes * 60);
-        this.timeString = minutes + ":" + seconds;
+        this.timeString = minutes + ":" + (seconds.toString().length < 2 ? "0" + seconds: seconds);
         this.timeText.text = this.timeString;
         this.registry.set('time', this.timeInSeconds);
     }
@@ -187,14 +244,23 @@ export class GameSingleDrum extends Scene
         let i = 0;
         if (this.bananas.children) {
             this.bananas.children.iterate(function (banana) {
-                    if (i === oldBananaLocation) {
-                        banana.destroy();
-                    }
-                    i++;
-                });
+                if (i === oldBananaLocation) {
+                    banana.destroy();
+                }
+                i++;
+            });
         }
         let location = this.bananaLocations[Phaser.Math.Between(0, 5)];
-        this.bananas.create(location.x, location.y, 'banana').setScale(0.07);
+        this.bananas.create(location.x, location.y, 'banana').setScale(0.07).setFlipX(Phaser.Math.Between(0,1));
+        this.bananas.children.iterate((banana) => {
+            this.time.addEvent({
+                delay: 2000, 
+                callback: this.shakeBanana(banana),
+                callbackScope: this, 
+                loop: true, 
+            });
+            this.shakeBanana(banana);
+        });
     }
     collectBananas (player, banana) 
     {
@@ -219,8 +285,29 @@ export class GameSingleDrum extends Scene
             var x = (player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
         }
     }
+    dropBanana() {
+        if (this.bananas.getLength()>0) {
+            let random = Phaser.Math.Between(1,this.bananas.getLength());
+            this.banana = this.bananas.children.entries.at(random).body.setGravityY(300);
+            this.timeInSeconds-=10;
+        }
+    }
+    shakeBanana(banana) {
+        this.tweens.add({
+            targets: banana, 
+            x: {
+                value: `+=${Phaser.Math.Between(10,15)}`,
+                duration: 90,
+                yoyo: true, 
+                repeat: 3,
+            },
+            ease: 'Sine.easeInOut'
+        });
+    }
     update ()
     {
+        this.minAngle = Phaser.Math.Between(-25, -45);
+        this.maxAngle = Phaser.Math.Between(25, 45);
         this.input.keyboard.on('keydown-D', () => {
             this.scareAnimal("toucan");
         });
@@ -239,24 +326,47 @@ export class GameSingleDrum extends Scene
             this.registry.set('gameOver', "timer");
             this.scene.start('GameOver');
         }
+      
+        if (this.monkey.angle >= this.maxAngle) {
+            // this.monkey.angle = this.maxAngle;  
+            this.direction = -1; 
+        } else if (this.monkey.angle <= this.minAngle) {
+            // this.monkey.angle = this.minAngle;  
+            this.direction = 1;  
+        } 
+        this.monkey.angle += this.direction;
 
-        let direction = 1;
-        const minAngle = -50;
-        const maxAngle = 50;
-
-
-        if (this.monkey.angle >= maxAngle) {
-            this.monkey.angle = maxAngle;  
-            direction = -1; 
-        } else if (this.monkey.angle <= minAngle) {
-            this.monkey.angle = minAngle;  
-            direction = 1;  
-        } else {
-            this.monkey.angle += direction;
+        if (this.monkey.angle >= 30) {
+            this.monkey.display.anims.play('left5', true);
         }
-        console.log(this.monkey.angle);
-        console.log(direction);
+        else if (this.monkey.angle >= 20) {
+            this.monkey.display.anims.play('left4', true);
+        }
+        else if (this.monkey.angle >= 10) {
+            this.monkey.display.anims.play('left3', true);
+        }
+        else if (this.monkey.angle >= 5) {
+            this.monkey.display.anims.play('left2', true);
+        }
+        else if (this.monkey.angle >= 0) {
+            this.monkey.display.anims.play('left1', true);
+        }
 
+        if (this.monkey.angle <= -30) {
+            this.monkey.display.anims.play('right4', true);
+        }
+        else if (this.monkey.angle <= -20) {
+            this.monkey.display.anims.play('right3', true);
+        }
+        else if (this.monkey.angle <= -10) {
+            this.monkey.display.anims.play('right2', true);
+        }
+        else if (this.monkey.angle <= -5) {
+            this.monkey.display.anims.play('right1', true);
+        }
+        else if (this.monkey.angle <= 0) {
+            this.monkey.display.anims.play('turn', true);
+        }
 
     }
 }
